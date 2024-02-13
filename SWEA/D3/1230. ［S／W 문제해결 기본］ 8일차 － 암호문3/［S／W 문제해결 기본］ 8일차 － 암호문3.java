@@ -1,73 +1,69 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+
 class Node {
+	Node next;
+	Node pre;
 	String data;
-	Node link;
-
-	Node() {
-	}
-
+	
+	Node() {}
 	Node(String data) {
 		this.data = data;
 	}
 }
 
-class LinkedList {
+class DoublyLinkedList {
 	Node head;
+	Node tail;
 	int size;
-
-	LinkedList() {
+	
+	DoublyLinkedList() {
 		head = new Node();
+		tail = new Node();
+		head.next = tail;
+		tail.pre = head;
 	}
-
-//	// 앞에서부터 삽입
-//	void add(String data) {
-//		Node newNode = new Node(data);
-//		
-//		newNode.link = head.link;
-//		head.link = newNode;
-//		
-//		size++;
-//	}
-
-	// 중간 삽입
-	void add(int idx, String data) {
-		if (idx < 0 || idx > size) {
-			System.out.println("인덱스 범위를 초과했습니다.");
-			return;
-		}
-
-		Node newNode = new Node(data);
-		Node curr = head;
-
-		for (int i = 0; i < idx; i++) {
-			curr = curr.link;
-		}
-
-		newNode.link = curr.link;
-		curr.link = newNode;
-
-		size++;
-	}
-
-	// 뒤에 삽입
+	
+	// 삽입
+	// 맨 뒤에 삽입
 	void add(String data) {
 		Node newNode = new Node(data);
-
-		Node curr = head;
-		while (curr.link != null) {
-			curr = curr.link;
-		}
-
-		curr.link = newNode;
-
+		
+		newNode.next = tail;
+		newNode.pre = tail.pre;
+		
+		tail.pre.next = newNode;
+		tail.pre = newNode;
+		
 		size++;
 	}
-
+	
+	// 중간에 삽입
+	void add(int idx, String data) {
+		if (idx < 0 || idx > size) {
+			System.out.println("인덱스 범위를 벗어났습니다.");
+			return;
+		}
+		
+		Node newNode = new Node(data);
+		Node curr = head;
+		
+		for (int i = 0; i < idx; i++) {
+			curr = curr.next;
+		}
+		
+		newNode.next = curr.next;
+		newNode.pre = curr;
+		
+		newNode.next.pre = newNode;
+		newNode.pre.next = newNode;
+		
+		size++;
+	}
+	
 	// 삭제
 	void remove(int idx) {
 		if (idx < 0 || idx >= size) {
@@ -75,35 +71,39 @@ class LinkedList {
 			return;
 		}
 		
-		Node curr = head;
-		for (int i = 0; i < idx; i++) {
-			curr = curr.link;
+		Node rmNode = head;
+		for (int i = 0; i <= idx; i++) {
+			rmNode = rmNode.next;
 		}
 		
-		curr.link = curr.link.link;
+		rmNode.next.pre = rmNode.pre;
+		rmNode.pre.next = rmNode.next;
 		
 		size--;
 	}
-
+	
 	// 조회
 	void printList() {
-		Node curr = head.link;
+		Node curr = head.next;
+		
 		for (int i = 0; i < 10; i++) {
 			System.out.print(curr.data + " ");
-			curr = curr.link;
+			curr = curr.next;
 		}
+		
 		System.out.println();
 	}
+	
 }
 
 public class Solution {
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
-		LinkedList list;
+		DoublyLinkedList list;
 
 		for (int t = 1; t <= 10; t++) {
-			list = new LinkedList();
+			list = new DoublyLinkedList();
 			
 			int N = Integer.parseInt(br.readLine());
 			
