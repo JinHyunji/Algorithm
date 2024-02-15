@@ -14,28 +14,27 @@ public class Solution {
 		StringTokenizer st;
 
 		int T = Integer.parseInt(br.readLine());
-		ArrayList<Integer> list;
+		StringBuilder sb = new StringBuilder();;
 
 		for (int t = 1; t <= T; t++) {
+			sb.append("#").append(t);
+			
 			int N = Integer.parseInt(br.readLine());
 
 			heap = new int[N + 1];
 			heapSize = 0;
-			list = new ArrayList<>();
-
-			System.out.print("#" + t + " ");
-
+			
 			for (int i = 0; i < N; i++) {
 				st = new StringTokenizer(br.readLine());
 				if (Integer.parseInt(st.nextToken()) == 1) {
 					pushHeap(Integer.parseInt(st.nextToken()));
 				} else {
-					System.out.print(popHeap() + " ");
+					sb.append(" ").append(popHeap());
 				}
 			}
-
-			System.out.println();
+			sb.append("\n");
 		}
+		System.out.println(sb);
 	}
 
 	static void pushHeap(int x) {
