@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,32 +12,28 @@ public class Solution {
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
-		
+
 		int T = Integer.parseInt(br.readLine());
 		ArrayList<Integer> list;
-		
+
 		for (int t = 1; t <= T; t++) {
 			int N = Integer.parseInt(br.readLine());
-			
+
 			heap = new int[N + 1];
 			heapSize = 0;
 			list = new ArrayList<>();
-			
+
+			System.out.print("#" + t + " ");
+
 			for (int i = 0; i < N; i++) {
 				st = new StringTokenizer(br.readLine());
-				int x = Integer.parseInt(st.nextToken());
-				if (x == 1) {
-					int data = Integer.parseInt(st.nextToken());
-					pushHeap(data);
+				if (Integer.parseInt(st.nextToken()) == 1) {
+					pushHeap(Integer.parseInt(st.nextToken()));
 				} else {
-					list.add(popHeap());
+					System.out.print(popHeap() + " ");
 				}
 			}
 
-			System.out.print("#" + t + " ");
-			for (int i = 0; i < list.size(); i++) {
-				System.out.print(list.get(i) + " ");
-			}
 			System.out.println();
 		}
 	}
@@ -63,7 +58,7 @@ public class Solution {
 		if (heapSize == 0) {
 			return -1;
 		}
-		
+
 		int root = heap[1];
 		heap[1] = heap[heapSize--];
 
@@ -73,16 +68,16 @@ public class Solution {
 		if (ch + 1 <= heapSize && heap[ch] < heap[ch + 1]) {
 			ch++;
 		}
-		
+
 		while (ch <= heapSize && heap[p] < heap[ch]) {
-			
+
 			int tmp = heap[p];
 			heap[p] = heap[ch];
 			heap[ch] = tmp;
-			
+
 			p = ch;
 			ch = p * 2;
-			
+
 			if (ch + 1 <= heapSize && heap[ch] < heap[ch + 1]) {
 				ch++;
 			}
