@@ -93,19 +93,19 @@ public class Solution {
 			Node coParent = q.poll();
 			
 			// 서브 트리 크기 구하기
-			preorder(coParent, nodes);
+			preorder(coParent);
 
 			System.out.println("#" + t + " " + coParent.num + " " + cnt);
 		}
 	}
 
 	// VLR
-	static void preorder(Node node, Node[] nodes) {
+	static void preorder(Node node) {
 		if (node == null)
 			return;
 		cnt++;
-		preorder(node.left, nodes);
-		preorder(node.right, nodes);
+		preorder(node.left);
+		preorder(node.right);
 
 	}
 }
