@@ -9,9 +9,8 @@ import java.util.StringTokenizer;
 public class Solution {
 
 	static int[][] data; // 점수, 칼로리
-	static int N, L, count, max, answer; // 재료수, 제한칼로리, 카운트, 최대값, 정답
+	static int N, L, cal, score, max; // 재료수, 제한칼로리, 카운트, 최대값, 정답
 	static boolean[] sel; // 사용된 값
-	static List<Integer> maxList; // 최대칼로리 리스트
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -25,7 +24,7 @@ public class Solution {
 			L = Integer.parseInt(st.nextToken());
 			data = new int[N][N];
 			sel = new boolean[N];
-			maxList = new ArrayList<>();
+			max = 0;
 			
 			for (int i = 0; i < N; i++) {
 				st = new StringTokenizer(br.readLine());
@@ -34,29 +33,24 @@ public class Solution {
 			}
 			powerset(0);
 
-			answer = Collections.max(maxList);
-
-			System.out.println("#" + t + " " + answer);
+			System.out.println("#" + t + " " + max);
 		}
 	}
 
 	public static void powerset(int idx) {
 		// base case : 재귀를 빠져나갈 조건
 		if (idx >= N) {
-			List<Integer> idxList = new ArrayList<>();
-			count = 0;
-			max = 0;
+			cal = 0;
+			score = 0;
 			for (int i = 0; i < N; i++) {
 				if (sel[i]) {
-					idxList.add(i);
-					count += data[i][1];
+					cal += data[i][1];
+					score += data[i][0];
 				}
 			}
-			if (0 < count && count <= L) {
-				for (int i : idxList) {
-					max += data[i][0];
-				}
-                maxList.add(max);
+			if (0 < cal && cal <= L) {
+				if (score > max)
+					max = score;
 			}
 		} else {
 			// recursive case : 나 자신을 다시 호출하는 부분
