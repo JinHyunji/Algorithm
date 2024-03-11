@@ -4,27 +4,38 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
+
+	static boolean[] prime;
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		
+
 		int M = Integer.parseInt(st.nextToken());
 		int N = Integer.parseInt(st.nextToken());
-		
-		for (int i = M; i <= N; i++) {
-			check(i);
+
+		check(N);
+
+		for (int i = M; i < prime.length; i++) {
+			if (prime[i] == false) {
+				System.out.println(i);
+			}
 		}
 	}
 
 	private static void check(int n) {
-		if (n == 1) return;
+		prime = new boolean[n + 1];
+		
+		if (n < 2) return;
+		
+		prime[0] = prime[1] = true;
 		
 		for (int i = 2; i <= Math.sqrt(n); i++) {
-			if (n % i == 0) {
-				return;
+			if (prime[i] == true) continue;
+
+			for (int j = i * i; j < prime.length; j = j+i) {
+				prime[j] = true;
 			}
 		}
-		
-		System.out.println(n);
 	}
 }
