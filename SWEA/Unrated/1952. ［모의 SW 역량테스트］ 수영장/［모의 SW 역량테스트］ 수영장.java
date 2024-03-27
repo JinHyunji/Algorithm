@@ -49,13 +49,17 @@ public class Solution {
 			return;
 		}
 		
-		// 1일권 구매시
-		DFS(price+prices[0]*months[month], month+1);
-		
-		// 1달권 구매시
-		DFS(price+prices[1], month+1);
-		
-		// 3달권 구매시
-		DFS(price+prices[2], month+3);
+		if (months[month] == 0) {
+			DFS(price, month+1);
+		} else {
+			// 1일권 구매시
+			DFS(price+prices[0]*months[month], month+1);
+			
+			// 1달권 구매시
+			DFS(price+prices[1], month+1);
+			
+			// 3달권 구매시
+			DFS(price+prices[2], month+3);
+		}
 	}
 }
