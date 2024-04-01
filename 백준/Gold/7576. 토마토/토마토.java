@@ -6,16 +6,6 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-
-	static class Tomato {
-		int r,c,day;
-
-		public Tomato(int r, int c, int day) {
-			this.r = r;
-			this.c = c;
-			this.day = day;
-		}
-	}
 	
 	static int[][] map;
 	static int N, M, count;
@@ -31,29 +21,29 @@ public class Main {
 
 		map = new int[N][M];
 		count = 0;
-		Queue<Tomato> q = new LinkedList<>();
+		Queue<int[]> q = new LinkedList<>();
 		
 		for (int r = 0; r < N; r++) {
 			st = new StringTokenizer(br.readLine());
 			for (int c = 0; c < M; c++) {
 				int a = Integer.parseInt(st.nextToken());
 				if (a == 1) {
-					q.add(new Tomato(r,c,0));
+					q.add(new int[] {r,c,0});
 				}
 				map[r][c] = a;
 			}
 		}
 
 		while(!q.isEmpty()) {
-			Tomato tomato = q.poll();
-			count = tomato.day;
+			int[] tomato = q.poll();
+			count = tomato[2];
 			
 			for (int i = 0; i < 4; i++) {
-				int nr = tomato.r + dr[i];
-				int nc = tomato.c + dc[i];
+				int nr = tomato[0] + dr[i];
+				int nc = tomato[1] + dc[i];
 				
 				if (nr >= 0 && nc >= 0 && nr < N && nc < M && map[nr][nc] == 0) {
-					q.add(new Tomato(nr, nc, tomato.day+1));
+					q.add(new int[] {nr,nc,tomato[2]+1});
 					map[nr][nc] = 1;
 				}
 			}
