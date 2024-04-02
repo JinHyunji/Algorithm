@@ -1,9 +1,2 @@
-import java.util.Scanner;
-public class Main {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt(); int M = sc.nextInt(); int K = sc.nextInt();
-		int result = M / N * K;
-		System.out.println(result);
-	}
-}
+import java.util.*;
+public class Main {public static void main(String[] args) {Scanner sc=new Scanner(System.in);int N=sc.nextInt();System.out.print(sc.nextInt()/N*sc.nextInt());}}
