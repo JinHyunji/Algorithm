@@ -8,7 +8,6 @@ public class Main {
 
 	static int N, M;
 	static int[] arr, result;
-	static boolean[] visited;
 	static StringBuilder sb = new StringBuilder();
 
 	public static void main(String[] args) throws IOException {
@@ -19,7 +18,6 @@ public class Main {
 		M = Integer.parseInt(st.nextToken());
 		arr = new int[N];
 		result = new int[M];
-		visited = new boolean[N];
 
 		st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < N; i++) {
@@ -29,7 +27,6 @@ public class Main {
 		Arrays.sort(arr);
 
 		perm(0, 0);
-		
 		
 		System.out.println(sb);
 	}
@@ -46,7 +43,6 @@ public class Main {
 
 		result[sidx] = arr[idx];
 		perm(idx + 1, sidx + 1);
-		
 		perm(idx+1, sidx);
 	}
 }
