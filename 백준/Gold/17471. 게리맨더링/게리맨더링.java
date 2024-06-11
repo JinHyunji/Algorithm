@@ -17,24 +17,21 @@ public class Main {
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
-		N = Integer.parseInt(br.readLine()); // 구역 수
+		N = Integer.parseInt(br.readLine());
 		min = Integer.MAX_VALUE;
 		people = new int[N];
+		map = new ArrayList<>();
 		selected = new boolean[N];
 		
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		// 구역 별 인구 수
 		for (int i = 0; i < N; i++) {
 			people[i] = Integer.parseInt(st.nextToken());
 		}
 		
-		// 리스트 생성
-		map = new ArrayList<>();
 		for (int i = 0; i < N; i++) {
 			map.add(new ArrayList<>());
 		}
 		
-		// 인접 구역 넣기
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			int cnt = Integer.parseInt(st.nextToken());
@@ -57,15 +54,13 @@ public class Main {
 			List<Integer> bList = new ArrayList<>();
 			
 			for (int i = 0; i < N; i++) {
-				if (selected[i])
-					aList.add(i);
-				else
-					bList.add(i);
+				if (selected[i]) aList.add(i);
+				else bList.add(i);
 			}
 			
 			if (aList.size() == 0 || bList.size() == 0) return;
 			
-			if (check(aList) && check(bList))
+			if (check(aList) && check(bList)) 
 				getDiff();
 			
 			return;
@@ -77,42 +72,45 @@ public class Main {
 		divide(idx+1);
 	}
 
-	private static void getDiff() {
-		int pA = 0, pB = 0;
-		
-		for (int i = 0; i < N; i++) {
-			if (selected[i])
-				pA += people[i];
-			else
-				pB += people[i];
-		}
-		
-		min = Math.min(min, Math.abs(pA-pB));
-	}
-
 	private static boolean check(List<Integer> list) {
 		Queue<Integer> q = new LinkedList<>();
 		visited = new boolean[N];
 		visited[list.get(0)] = true;
-		q.offer(list.get(0));
+		q.add(list.get(0));
 		
 		int count = 1;
 		
 		while (!q.isEmpty()) {
-			int curr = q.poll();
+			int cur = q.poll();	
 			
-			for (int i = 0; i < map.get(curr).size(); i++) {
-				int y = map.get(curr).get(i);
+			for (int i = 0; i < map.get(cur).size(); i++) {
+				int y = map.get(cur).get(i);
 				
 				if (list.contains(y) && !visited[y]) {
-					q.offer(y);
+					q.add(y);
 					visited[y] = true;
 					count++;
 				}
 			}
 		}
 		
-		if (count == list.size()) return true;
-		else return false;
+		if (count == list.size()) 
+			return true;
+		else
+			return false;
+	}
+
+	private static void getDiff() {
+		int pA = 0;
+		int pB = 0;
+		
+		for (int i = 0; i < N; i++) {
+			if (selected[i])
+				pA += people[i];
+			else 
+				pB += people[i];
+		}
+		
+		min = Math.min(min, Math.abs(pA-pB));
 	}
 }
