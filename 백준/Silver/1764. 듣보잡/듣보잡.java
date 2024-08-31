@@ -29,9 +29,9 @@ public class Main {
             }
         }
 
-        sb.append(answer.size()).append("\n");
-        answer.sort(String::compareTo);
+        Collections.sort(answer);
 
+        sb.append(answer.size()).append("\n");
         for (int i = 0; i < answer.size(); i++) {
             sb.append(answer.get(i)).append("\n");
         }
