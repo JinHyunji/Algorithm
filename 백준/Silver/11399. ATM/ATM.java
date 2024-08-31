@@ -7,9 +7,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int N, ans;
-        N = Integer.parseInt(br.readLine());
-        ans = 0;
+        int N = Integer.parseInt(br.readLine());
         ArrayList<Integer> times = new ArrayList<>();
 
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -19,12 +17,14 @@ public class Main {
 
         Collections.sort(times);
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j <= i; j++) {
-                ans += times.get(j);
-            }
+        int ans = 0;
+        int prevSum = 0;
+
+        for (int i : times) {
+            ans += prevSum + i;
+            prevSum += i;
         }
-        
+
         System.out.println(ans);
     }
 }
