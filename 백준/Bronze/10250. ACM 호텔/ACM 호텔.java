@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,23 +18,10 @@ public class Main {
             int W = Integer.parseInt(st.nextToken());
             int N = Integer.parseInt(st.nextToken());
 
-            int floor;
-            int no;
+            int floor = N % H == 0 ? H : N % H; // 층 계산
+            int room = N % H == 0 ? N / H : (N / H) + 1; // 호수 계산
 
-            if (N % H == 0) {
-                floor = H * 100;
-                no = N / H;
-            } else {
-                if (N < H) {
-                    floor = N * 100;
-                    no = 1;
-                } else {
-                    floor = N % H * 100;
-                    no = N / H + 1;
-                }
-            }
-
-            sb.append(floor+no).append("\n");
+            sb.append(floor * 100 + room).append("\n");
         }
 
         System.out.println(sb);
