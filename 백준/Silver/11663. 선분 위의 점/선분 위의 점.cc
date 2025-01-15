@@ -3,76 +3,41 @@
 #include <vector>
 #include <string>
 
-
-static int lowerBound(int, const std::vector<int>&);
-static int upperBound(int, const std::vector<int>&);
-
 int main()
 {
-	std::ios::sync_with_stdio(false);
-	std::cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 
-	int N, M;
-	std::cin >> N >> M;
-	std::vector<int> dots(N);
+    int N, M;
+    std::cin >> N >> M;
 
-	for (int i = 0; i < N; i++)
-	{
-		std::cin >> dots[i];
-	}
+    std::vector<int> dots(N);
+    for (int i = 0; i < N; i++) {
+        std::cin >> dots[i];
+    }
 
-	std::sort(dots.begin(), dots.end());
-	std::string output;
+    // 정렬
+    std::sort(dots.begin(), dots.end());
 
-	for (int i = 0; i < M; i++)
-	{
-		int start, end;
-		std::cin >> start >> end;
+    std::string output;
+    for (int i = 0; i < M; i++) {
+        int start, end;
+        std::cin >> start >> end;
 
-		output += std::to_string((upperBound(end, dots) - lowerBound(start, dots) + 1)) + "\n";
-	}
+        // lower_bound와 upper_bound 사용
+        int startIdx = std::lower_bound(dots.begin(), dots.end(), start) - dots.begin();
+        int endIdx = std::upper_bound(dots.begin(), dots.end(), end) - dots.begin() - 1;
 
-	std::cout << output;
-}
+        // 범위 내 원소 개수 계산
+        if (startIdx > endIdx) {
+            output += "0\n";
+        }
+        else {
+            output += std::to_string(endIdx - startIdx + 1) + "\n";
+        }
+    }
 
-static int lowerBound(int start, const std::vector<int>& dots)
-{
-	int min = 0;
-	int max = dots.size();
+    std::cout << output;
 
-	while (min < max)
-	{
-		int mid = (min + max) / 2;
-
-		if (dots[mid] < start)
-		{
-			min = mid + 1;
-		}
-		else {
-			max = mid;
-		}
-	}
-
-	return min;
-}
-
-static int upperBound(int end, const std::vector<int>& dots)
-{
-	int min = 0;
-	int max = dots.size();
-
-	while (min < max)
-	{
-		int mid = (min + max) / 2;
-
-		if (dots[mid] <= end)
-		{
-			min = mid + 1;
-		}
-		else {
-			max = mid;
-		}
-	}
-
-	return min - 1;
+    return 0;
 }
