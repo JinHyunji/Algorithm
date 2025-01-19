@@ -21,7 +21,7 @@ int main()
 	while (start < end)
 	{
 		int sum = liquid[start] + liquid[end];
-		int absSum = std::abs(sum);
+		int absSum = abs(sum);
 
 		if (absSum < min)
 		{
@@ -39,8 +39,6 @@ int main()
 			end -= 1;
 		}
 		else {
-			result[0] = liquid[start];
-			result[1] = liquid[end];
 			break;
 		}
 	}
