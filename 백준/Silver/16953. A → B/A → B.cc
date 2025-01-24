@@ -11,10 +11,8 @@ int main()
 	long long A, B;
 	cin >> A >> B;
 
-	vector<bool> visited(MAX + 1, false);
 	queue<pair<long long, int>> q;
 	q.push({ A, 1 });
-	visited[A] = true;
 
 	while (!q.empty())
 	{
@@ -30,11 +28,8 @@ int main()
 
 		for (long long i : {num * 2, num * 10 + 1})
 		{
-			if (i >= 1 && i <= MAX && !visited[i])
-			{
-				visited[i] = true;
+			if (i <= B)
 				q.push({ i, op + 1 });
-			}
 		}
 	}
 
