@@ -1,67 +1,65 @@
 #include <iostream>
-#include <queue>
 #include <algorithm>
-#include <utility>
+#include <vector>
+#include <queue>
+#include <cmath>
 using namespace std;
 
-bool cmp(pair<int, int>& p1, pair<int, int>& p2)
-{
-	if (p1.second < p2.second)
-	{
-		return true;
-	}
-	else if (p1.second == p2.second)
-	{
-		return p1.first > p2.first;
-	}
-	else
-	{
-		return false;
-	}
-}
+int N, M, K;
+vector<pair<int, int>> beers;
+priority_queue<int, vector<int>, greater<int>> pq;
 
 int main()
 {
-	cin.tie(NULL);
+	// 입출력 성능 향상
 	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-	int N, M, K;
-	long long sum = 0;
-	int answer = -1;
+	// 입력
 	cin >> N >> M >> K;
-	priority_queue<int, vector<int>, greater<int>> pq;
-	pair<int, int>* arr = new pair<int, int>[K];
+	beers.resize(K);
+
 	for (int i = 0; i < K; i++)
 	{
-		cin >> arr[i].first >> arr[i].second;
+		cin >> beers[i].first >> beers[i].second;
 	}
-	sort(arr, arr + K, cmp);
+
+	// second를 기준으로 오름차순 정렬
+	sort(beers.begin(), beers.end(), [](pair<int, int>& a, pair<int, int>& b)
+		{
+			return a.second < b.second;
+		});
+
+	int sum = 0;
 	for (int i = 0; i < N; i++)
 	{
-		pq.push(arr[i].first);
-		sum += arr[i].first;
+		sum += beers[i].first;
+		pq.push(beers[i].first);
 	}
+
 	if (sum >= M)
 	{
-		cout << arr[N-1].second;
+		cout << beers[N - 1].second;
 	}
 	else
 	{
 		for (int i = N; i < K; i++)
 		{
-			if (pq.top() < arr[i].first)
+			if (pq.top() < beers[i].first)
 			{
-				pq.push(arr[i].first);
-				sum += ((long long)arr[i].first - (long long)pq.top());
-				pq.pop();
+				sum += beers[i].first - pq.top(); pq.pop();
+				pq.push(beers[i].first);
+
 				if (sum >= M)
 				{
-					answer = arr[i].second;
-					break;
+					cout << beers[i].second;
+					return 0;
 				}
 			}
 		}
-		cout << answer << "\n";
+
+		cout << -1;
 	}
+
 	return 0;
 }
