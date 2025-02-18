@@ -1,40 +1,24 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
-#include <string>
 using namespace std;
 
-int main()
-{
-	// 입력
-	int N, result = 0;
-	cin >> N;
+int main() {
+    int n;
+    cin >> n;
+    vector<int> arr(n), dp(n, 1);
 
-	vector<int> sequence(N); // 수열
-	for (int& s : sequence)
-		cin >> s;
+    for (int i = 0; i < n; i++) cin >> arr[i];
 
-	// 로직
-	vector<int> lengths(N); // 최대 길이
-	for (int i = 0; i < N; i++)
-	{
-		int maxLen = 0;
+    int maxLength = 1;
+    for (int i = 1; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            if (arr[j] < arr[i]) {
+                dp[i] = max(dp[i], dp[j] + 1);
+            }
+        }
+        maxLength = max(maxLength, dp[i]);
+    }
 
-		for (int j = 0; j < i; j++)
-		{
-			if (sequence[i] > sequence[j])
-			{
-				maxLen = max(maxLen, lengths[j]);
-			}
-		}
-
-		lengths[i] = maxLen + 1;
-	}
-
-	// 출력
-	for (int& len : lengths)
-		result = max(len, result);
-
-	cout << result << endl;
-	return 0;
+    cout << maxLength << '\n';
+    return 0;
 }
