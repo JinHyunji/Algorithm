@@ -1,16 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <list>
-#include <map>
-#include <set>
 #include <string>
-#include <cstdlib>
-#include <cmath>
-#include <cstdint>
-#include <algorithm>
 using namespace std;
-using ll = long long;
 
 int main()
 {
