@@ -6,7 +6,7 @@ using namespace std;
 
 int R, C, maxDist = 1;
 vector<vector<int>> board;
-vector<int> usedAlpha;
+bool visited[26];
 int dy[] = { 0, 1, 0, -1 };
 int dx[] = { 1, 0, -1, 0 };
 
@@ -19,20 +19,15 @@ void DFS(int x, int y, int dist)
 
 		if (ny < 0 || ny >= R || nx < 0 || nx >= C) continue;
 
-		bool flag = false;
-		for (int alpha : usedAlpha)
-			if (alpha == board[ny][nx])
-			{
-				maxDist = max(maxDist, dist);
-				flag = true;
-				break;
-			}
+		if (visited[board[ny][nx] - 65])
+		{
+			maxDist = max(maxDist, dist);
+			continue;
+		}
 
-		if (flag) continue;
-
-		usedAlpha.push_back(board[ny][nx]);
+		visited[board[ny][nx] - 65] = true;
 		DFS(nx, ny, dist + 1);
-		usedAlpha.pop_back();
+		visited[board[ny][nx] - 65] = false;
 	}
 }
 
@@ -56,7 +51,7 @@ int main()
 		}
 	}
 
-	usedAlpha.push_back(board[0][0]);
+	visited[board[0][0] - 65] = true;
 	DFS(0, 0, 1);
 	cout << maxDist;
 	return 0;
