@@ -1,17 +1,10 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <list>
-#include <map>
-#include <set>
-#include <string>
-#include <cstring>
-#include <cstdlib>
 #include <cmath>
 #include <cstdint>
 #include <algorithm>
 using namespace std;
-using ll = long long;
 
 int N, M, startC, endC;
 vector<pair<int, int>> graph[1001];
