@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <cstring> // memset 사용
 using namespace std;
 
 int N, M, times;
@@ -8,6 +9,7 @@ int map[100][100];
 bool visited[100][100];
 int dy[] = { 0, 1, 0, -1 };
 int dx[] = { 1, 0, -1, 0 };
+vector<pair<int, int>> willBeMelted; // 메모리 재사용
 
 
 void FindExternalAir()
@@ -15,17 +17,14 @@ void FindExternalAir()
 	queue<pair<int, int>> q;
 	q.push({ 0, 0 });
 
-	// visited 배열 초기화
-	for (int i = 0; i < N; i++)
-		fill(visited[i], visited[i] + M, false);
+	// visited 배열을 memset으로 초기화 (더 빠름)
+	memset(visited, false, sizeof(visited));
 
 	visited[0][0] = true;
 
 	while (!q.empty())
 	{
-		int y = q.front().first;
-		int x = q.front().second;
-		q.pop();
+		auto [y, x] = q.front(); q.pop(); // unpack 사용
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -40,9 +39,9 @@ void FindExternalAir()
 	}
 }
 
-vector<pair<int, int>> CheckMeltingPoint()
+void CheckMeltingPoint()
 {
-	vector<pair<int, int>> willBeMelted;
+	willBeMelted.clear(); // 이전 값 초기화 후 재사용
 
 	for (int y = 1; y < N; y++)
 	{
@@ -65,11 +64,9 @@ vector<pair<int, int>> CheckMeltingPoint()
 			}
 		}
 	}
-	
-	return willBeMelted;
 }
 
-void MeltingCheese(vector<pair<int, int>>& willBeMelted)
+void MeltingCheese()
 {
 	for (auto& p : willBeMelted)
 	{
@@ -85,25 +82,16 @@ int main()
 	// 입력
 	cin >> N >> M;
 
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < M; j++)
-		{
-			int input;
-			cin >> input;
-			map[i][j] = input;
-		}
-	}
+	for (int y = 0; y < N; y++)
+		for (int x = 0; x < M; x++)
+			cin >> map[y][x];
 
 	while (true)
 	{
 		FindExternalAir();
-
-		vector<pair<int, int>> willBeMelted = CheckMeltingPoint();
-
+		CheckMeltingPoint();
 		if (willBeMelted.empty()) break;
-
-		MeltingCheese(willBeMelted);
+		MeltingCheese();
 		times++;
 	}
 
