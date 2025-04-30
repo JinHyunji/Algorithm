@@ -1,22 +1,21 @@
 #include <iostream>
-#include <vector>
 #include <queue>
+#include <vector>
 #include <string>
-#include <tuple>
 using namespace std;
 
 int N, M, P;
 int map[1000][1000] = { 0, };
-int movingCnts[10]; // 플레이어마다 이동 가능한 칸 수
-vector<queue<pair<int, int>>> castles; // 플레이어 별 성의 위치
-vector<int> answer; // 플레이어 별 성의 개수
+int moveableCnt[10];
+vector<queue<pair<int, int>>> playerPos;
+vector<int> answer;
 int dy[] = { 0, 1, 0, -1 };
 int dx[] = { 1, 0, -1, 0 };
 
-bool end()
+bool End()
 {
 	for (int i = 1; i <= P; i++)
-		if (castles[i].size() != 0) return false;
+		if (!playerPos[i].empty()) return false;
 
 	return true;
 }
@@ -27,11 +26,11 @@ int main()
 	cin.tie(nullptr);
 
 	cin >> N >> M >> P;
-	castles.resize(P + 1);
+	playerPos.resize(P + 1);
 	answer.resize(P + 1);
 
 	for (int i = 1; i <= P; i++)
-		cin >> movingCnts[i];
+		cin >> moveableCnt[i];
 
 	for (int y = 0; y < N; y++)
 	{
@@ -40,29 +39,30 @@ int main()
 
 		for (int x = 0; x < M; x++)
 		{
-			if (str[x] != '.' && str[x] != '#')
-			{
-				map[y][x] = str[x] - '0';
-				castles[map[y][x]].push({ y, x });
-				answer[map[y][x]]++;
-			}
-			else if (str[x] == '#')
+			if (str[x] == '#')
 			{
 				map[y][x] = -1;
+			}
+			else if (str[x] != '.')
+			{
+				map[y][x] = str[x] - '0';
+				playerPos[map[y][x]].push({ y, x });
+				answer[map[y][x]]++;
 			}
 		}
 	}
 
-	while (!end())
+	while (!End())
 	{
-		for (int p = 1; p <= P; p++)
+		for (int player = 1; player <= P; player++)
 		{
-			queue<pair<int, int>>& q = castles[p];
-			int moveCount = movingCnts[p];
+			queue<pair<int, int>>& q = playerPos[player];
+			int moveCount = moveableCnt[player];
 
 			for (int step = 0; step < moveCount && !q.empty(); step++)
 			{
 				int qSize = q.size();
+
 				while (qSize--)
 				{
 					auto [y, x] = q.front(); q.pop();
@@ -75,9 +75,9 @@ int main()
 						if (ny < 0 || nx < 0 || ny >= N || nx >= M) continue;
 						if (map[ny][nx] == -1 || map[ny][nx] != 0) continue;
 
-						map[ny][nx] = p;
+						map[ny][nx] = player;
 						q.push({ ny, nx });
-						answer[p]++;
+						answer[player]++;
 					}
 				}
 			}
@@ -85,9 +85,7 @@ int main()
 	}
 
 	for (int i = 1; i <= P; i++)
-	{
 		cout << answer[i] << " ";
-	}
 
 	return 0;
 }
