@@ -3,10 +3,12 @@
 #include <vector>
 using namespace std;
 
-int N, M; // 열과 행
-vector<vector<vector<pair<int, int>>>> switchMap; // 스위치 정보가 담긴 맵
-vector<vector<bool>> lightMap; // 불 켜진 정보가 담긴 맵
-vector<vector<bool>> visited; // 방문 여부
+#define MAX 101
+
+int N, M;
+vector<pair<int, int>> switchMap[MAX][MAX]; // 스위치 정보가 담긴 맵
+bool lightMap[MAX][MAX]; // 불 켜진 정보가 담긴 맵
+bool visited[MAX][MAX]; // 방문 여부
 int dy[] = { 0, 1, 0, -1 };
 int dx[] = { 1, 0, -1, 0 };
 
@@ -21,9 +23,6 @@ int main()
 	cin.tie(nullptr);
 
 	cin >> N >> M;
-	switchMap.resize(M + 1, vector<vector<pair<int, int>>>(N + 1));
-	lightMap.resize(M + 1, vector<bool>(N + 1));
-	visited.resize(M + 1, vector<bool>(N + 1));
 
 	for (int i = 0; i < M; i++)
 	{
