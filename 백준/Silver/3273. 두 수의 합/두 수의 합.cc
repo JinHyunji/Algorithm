@@ -25,14 +25,8 @@ int main()
 		if (diff <= 0 || diff > 1000000) continue;
 
 		if (freq[diff])
-		{
 			answer++;
-		}
-		else
-		{
-			freq[arr[i]] = true;
-		}
-		
+		freq[arr[i]] = true;
 	}
 
 	cout << answer;
