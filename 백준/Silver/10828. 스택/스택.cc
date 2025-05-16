@@ -28,7 +28,7 @@ int main()
 		}
 		else if (str == "top")
 		{
-			if (stack.size() <= 0)
+			if (stack.empty())
 			{
 				cout << -1 << "\n";
 			}
@@ -39,7 +39,7 @@ int main()
 		}
 		else if (str == "pop")
 		{
-			if (stack.size() <= 0)
+			if (stack.empty())
 			{
 				cout << -1 << "\n";
 			}
