@@ -15,9 +15,7 @@ int main(void) {
 	string input;
 	cin >> input;
 
-	stack<pair<int, char>> stack;
-	vector<int> laser(100001);
-	int curr = 0;
+	stack<char> stack;
 	bool prev = false;
 	int answer = 0;
 
@@ -26,26 +24,20 @@ int main(void) {
 		if (i == '(')
 		{
 			prev = false;
-			stack.push({ ++curr, i });
+			stack.push(i);
 		}
 		else
 		{
-			if (prev)
+			if (prev) // 괄호
 			{
-				auto [num, p] = stack.top(); stack.pop();
-				answer += (laser[num] + 1);
-				laser[num] = -1;
+				stack.pop();
+				answer++;
 			}
-			else
+			else // 레이저
 			{
 				prev = true;
-				curr--;
 				stack.pop();
-				for (int idx = 1; idx <= curr; idx++)
-				{
-					if (idx == -1 || idx == 0) continue;
-					laser[idx]++;
-				}
+				answer += stack.size();
 			}
 		}
 	}
