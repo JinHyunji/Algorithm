@@ -1,70 +1,67 @@
 #include <iostream>
-#include <vector>
 #include <queue>
+#include <tuple>
 #include <string>
+#include <algorithm>
+#include <vector>
 using namespace std;
 
-struct State
-{
-    int y, x, dist, broken;
-};
+int dy[] = { 0, 1, 0, -1 };
+int dx[] = { 1, 0, -1, 0 };
+
+const static int MAX = 1000;
+int N, M;
+int map[MAX][MAX];
+bool visited[MAX][MAX][2]; // 벽을 안 부순 경우와 부순 경우의 방문 배열
 
 int main()
 {
 	ios::sync_with_stdio(false);
-	cin.tie(nullptr); cout.tie(nullptr);
+	cin.tie(nullptr);
 
-	int N, M;
 	cin >> N >> M;
 
-	vector<vector<int>> map(N, vector<int>(M));
-	vector<vector<vector<bool>>> visited(N, vector<vector<bool>>(M, vector<bool>(2)));
-	int dy[] = { 0, 1, 0, -1 };
-	int dx[] = { 1, 0, -1, 0 };
-
-	for (int i = 0; i < N; i++)
+	for (int x = 0; x < N; x++)
 	{
-		string str;
-		cin >> str;
+		string input;
+		cin >> input;
 
-		for (int j = 0; j < M; j++)
+		for (int y = 0; y < M; y++)
 		{
-			map[i][j] = (str[j] == '1');
+			map[x][y] = input[y] - '0';
 		}
 	}
 
-	queue<State> q;
-	q.push({ 0, 0, 1, 0 }); // y, x, dist, breakedCnt
-	visited[0][0][0] = true;
+	queue<tuple<int, int, int, bool>> q;
+	q.push({ 0, 0, 1, false }); // x, y, dist, broken
+	visited[0][0][0] = true; // 벽을 안 부순 경우의 방문 처리
 
 	while (!q.empty())
 	{
-		State cur = q.front(); q.pop();
+		auto [x, y, dist, broken] = q.front(); q.pop();
 
-        if (cur.y == N - 1 && cur.x == M - 1) {
-            cout << cur.dist;
-            return 0;
-        }
+		if (x == N - 1 && y == M - 1)
+		{
+			cout << dist;
+			return 0;
+		}
 
 		for (int i = 0; i < 4; i++)
 		{
-			int ny = cur.y + dy[i];
-            int nx = cur.x + dx[i];
+			int nx = x + dx[i];
+			int ny = y + dy[i];
 
-			if (ny >= 0 && ny < N && nx >= 0 && nx < M)
+			if (nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
+
+			if (map[nx][ny] == 0 && !visited[nx][ny][broken]) // 벽이 아니고 방문한 적이 없으면 방문
 			{
-				// 벽이 없는 경우, 현재 벽 부순 여부를 유지하면서 방문 처리
-				if (map[ny][nx] == 0 && !visited[ny][nx][cur.broken])
-				{
-					q.push({ ny, nx, cur.dist + 1, cur.broken });
-					visited[ny][nx][cur.broken] = true;
-				}
-				// 벽이 있는 경우, 한 번도 부수지 않은 상태에서만 부술 수 있음
-				else if (map[ny][nx] == 1 && cur.broken == 0 && !visited[ny][nx][1])
-				{
-					q.push({ ny, nx, cur.dist + 1, 1 });
-					visited[ny][nx][1] = true;
-				}
+				visited[nx][ny][broken] = true;
+				q.push({ nx, ny, dist + 1, broken });
+			}
+			else if (map[nx][ny] == 1 && broken == false && !visited[nx][ny][1]) // 벽이지만 뚫은적 없고 방문한 적 없으면 방문
+			{
+				visited[nx][ny][1] = true;
+				q.push({ nx, ny, dist + 1, true });
 			}
 		}
 	}
