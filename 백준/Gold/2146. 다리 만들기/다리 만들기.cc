@@ -1,95 +1,130 @@
 #include <iostream>
+#include <stack>
 #include <queue>
+#include <string>
+#include <algorithm>
 #include <vector>
+#include <tuple>
 using namespace std;
 
+int dy[] = { 1, 0, -1, 0 };
+int dx[] = { 0, 1, 0, -1 };
+
 int N;
-int map[100][100] = { 0, };
-int dy[] = { 0, 1, 0, -1 };
-int dx[] = { 1, 0, -1, 0 };
-vector<pair<int, int>> borders[10002];
+int map[100][100];
+vector<vector<pair<int, int>>> lands;
 
-void Sorting(int y, int x, int label)
+int distance(int color)
 {
-	map[y][x] = label;
-
-	bool isBorder = false;
-	for (int i = 0; i < 4; i++)
-	{
-		int ny = y + dy[i];
-		int nx = x + dx[i];
-
-		if (ny < 0 || nx < 0 || ny >= N || nx >= N) continue;
-		if (map[ny][nx] == 0) isBorder = true;
-		if (map[ny][nx] == 1) Sorting(ny, nx, label);
-	}
-	
-	if (isBorder)
-		borders[label].emplace_back(y, x);
-}
-
-int BFS(int label)
-{
-	queue<pair<pair<int,int>, int>> q;
+	queue<tuple<int, int, int>> q;
 	bool visited[100][100] = { false };
 
-	for (auto& pos : borders[label])
+	for (auto [x, y] : lands[color])
 	{
-		q.push({ pos, 0 });
-		visited[pos.first][pos.second] = true;
+		q.emplace(x, y, 0);
+		visited[x][y] = true;
 	}
 
 	while (!q.empty())
 	{
-		auto [pos, dist] = q.front(); q.pop();
-		int y = pos.first, x = pos.second;
+		auto [x, y, dist] = q.front(); q.pop();
 
 		for (int i = 0; i < 4; i++)
 		{
-			int ny = y + dy[i];
 			int nx = x + dx[i];
+			int ny = y + dy[i];
 
-			if (ny < 0 || nx < 0 || ny >= N || nx >= N) continue;
-			if (visited[ny][nx]) continue;
+			if (nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
+			if (map[nx][ny] == color || visited[nx][ny]) continue;
 
-			if (map[ny][nx] != 0 && map[ny][nx] != label)
-				return dist;
-
-			if (map[ny][nx] == 0)
+			if (map[nx][ny] == 0)
 			{
-				visited[ny][nx] = true;
-				q.push({ {ny, nx }, dist + 1 });
+				q.push({ nx, ny, dist + 1 });
+				visited[nx][ny] = true;
+			}
+			else
+			{
+				return dist;
 			}
 		}
 	}
 
-	return 1e9;
+	return -1;
 }
+
 
 int main()
 {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 
-	// 1. 입력 및 저장
 	cin >> N;
-	for (int y = 0; y < N; y++)
-		for (int x = 0; x < N; x++)
-			cin >> map[y][x];
 
+	for (int x = 0; x < N; x++)
+	{
+		for (int y = 0; y < N; y++)
+		{
+			cin >> map[x][y];
+		}
+	}
 
-	// 2. 영토 구분
-	int label = 2;
-	for (int y = 0; y < N; y++)
-		for (int x = 0; x < N; x++)
-			if (map[y][x] == 1)
-				Sorting(y, x, label++);
+	// 영역 구분하기
+	queue<pair<int, int>> tempQ;
+	lands.resize(10000);
+	int color = 1;
 
+	for (int x = 0; x < N; x++)
+	{
+		for (int y = 0; y < N; y++)
+		{
+			if (map[x][y] == 1) // 영역 구분 안했으면
+			{
+				// 색상 정하기
+				color++;
 
-	// 3. BFS
-	int answer = 1e9;
-	for (int i = 2; i < label; i++)
-		answer = min(answer, BFS(i));
+				// 연결된 섬 모두 마킹
+				tempQ.push({ x, y });
+				map[x][y] = color;
+
+				while (!tempQ.empty())
+				{
+					auto [x, y] = tempQ.front(); tempQ.pop();
+
+					bool isSea = false;
+
+					for (int i = 0; i < 4; i++)
+					{
+						int nx = x + dx[i];
+						int ny = y + dy[i];
+
+						if (nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
+						if (map[nx][ny] == 0)
+						{
+							isSea = true;
+							continue;
+						}
+						if (map[nx][ny] == 1)
+						{
+							tempQ.push({ nx, ny });
+							map[nx][ny] = color;
+						}
+					}
+
+					if (isSea)
+					{
+						lands[color].emplace_back(x, y);
+					}
+				}
+			}
+		}
+	}
+
+	int answer = INT32_MAX;
+	for (int i = 2; i <= color; i++)
+	{
+		answer = min(answer, distance(i));
+	}
+
 
 	cout << answer;
 	return 0;
