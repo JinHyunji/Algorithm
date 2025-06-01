@@ -1,137 +1,148 @@
 #include <iostream>
+#include <stack>
+#include <queue>
+#include <string>
+#include <algorithm>
 #include <vector>
 using namespace std;
 
-int N, M;
-int dy[]{ -1, 1, 0, 0 };
-int dx[]{ 0, 0, -1, 1 };
-vector<vector<int>> map;
+int dy[] = { 0, 1, 0, -1 };
+int dx[] = { 1, 0, -1, 0 };
 
-bool IsAllMelted();
-void MeltIcebergs();
-bool IsSeparate();
-void DFS(int y, int x, vector<vector<bool>>& visited);
+int N, M, year = 0;
+bool bIsSeperated = false;
+int map[300][300];
+
+
+bool IsAllMelted()
+{
+	for (int x = 1; x < N - 1; x++)
+	{
+		for (int y = 1; y < M - 1; y++)
+		{
+			if (map[x][y] != 0)
+				return false;
+		}
+	}
+
+	return true;
+}
+
+bool IsSeperated()
+{
+	bool visited[300][300] = { false };
+	queue<pair<int, int>> q;
+	int landCnt = 0;
+
+	for (int x = 1; x < N - 1; x++)
+	{
+		for (int y = 1; y < M - 1; y++)
+		{
+			if (map[x][y] != 0 && !visited[x][y])
+			{
+				q.push({ x, y });
+				visited[x][y] = true;
+
+				while (!q.empty())
+				{
+					auto [x, y] = q.front(); q.pop();
+
+					for (int i = 0; i < 4; i++)
+					{
+						int nx = x + dx[i];
+						int ny = y + dy[i];
+
+						if (map[nx][ny] == 0 || visited[nx][ny]) continue;
+
+						q.push({ nx, ny });
+						visited[nx][ny] = true;
+					}
+				}
+
+				landCnt++;
+			}
+		}
+	}
+
+	if (landCnt >= 2)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Melting()
+{
+	int temp[300][300] = { 0, };
+
+	for (int x = 1; x < N - 1; x++)
+	{
+		for (int y = 1; y < M - 1; y++)
+		{
+			if (map[x][y] != 0)
+			{
+				int sea = 0;
+				for (int i = 0; i < 4; i++)
+				{
+					int nx = x + dx[i];
+					int ny = y + dy[i];
+
+					if (map[nx][ny] == 0)
+					{
+						sea++;
+					}
+				}
+
+				temp[x][y] = max(0, map[x][y] - sea);
+			}
+		}
+	}
+
+	copy(&temp[0][0], &temp[0][0] + 300 * 300, &map[0][0]);
+}
 
 int main()
 {
-	// 입력
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 
 	cin >> N >> M;
-	map.resize(N, vector<int>(M, 0));
-
-	for (int i = 0; i < N; i++)
+	for (int x = 0; x < N; x++)
 	{
-		for (int j = 0; j < M; j++)
+		for (int y = 0; y < M; y++)
 		{
-			cin >> map[i][j];
+			cin >> map[x][y];
 		}
 	}
-
-	int year = 0;
 
 	while (true)
 	{
-		// 빙산이 분리되었는지 확인
-		if (IsSeparate())
-		{
-			cout << year;
-			return 0;
-		}
-
-		// 빙산이 모두 녹았는지 확인
 		if (IsAllMelted())
 		{
-			cout << 0;
-			return 0;
+			break;
 		}
 
-		// 빙산 녹이기
-		MeltIcebergs();
+		if (IsSeperated())
+		{
+			bIsSeperated = true;
+			break;
+		}
+
+		Melting();
 		year++;
 	}
 
+	if (bIsSeperated)
+	{
+		cout << year;
+	}
+	else
+	{
+		cout << 0;
+	}
+
 	return 0;
-}
-
-bool IsAllMelted()
-{
-	for (int i = 0;i < N; i++)
-	{
-		for (int j = 0; j < M; j++)
-		{
-			if (map[i][j] > 0)
-				return false;
-		}
-	}
-	return true;
-}
-
-void MeltIcebergs()
-{
-	vector<vector<int>> temp_map = map;
-
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < M; j++)
-		{
-			if (map[i][j] > 0)
-			{
-				int cnt = 0;
-
-				for (int k = 0; k < 4; k++)
-				{
-					int ny = i + dy[k];
-					int nx = j + dx[k];
-
-					if (ny >= 0 && ny < N && nx >= 0 && nx < M && map[ny][nx] == 0)
-					{
-						cnt++;
-					}
-				}
-
-				temp_map[i][j] = max(0, temp_map[i][j] - cnt);
-			}
-		}
-	}
-
-	map = temp_map;
-}
-
-bool IsSeparate()
-{
-	vector<vector<bool>> visited(N, vector<bool>(M, 0));
-	int cnt = 0;
-
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < M; j++)
-		{
-			if (map[i][j] > 0 && !visited[i][j])
-			{
-				cnt++;
-				if (cnt > 1) return true;
-				DFS(i, j, visited);
-			}
-		}
-	}
-
-	return false;
-}
-
-void DFS(int y, int x, vector<vector<bool>>& visited)
-{
-	visited[y][x] = true;
-
-	for (int i = 0; i < 4; i++)
-	{
-		int ny = y + dy[i];
-		int nx = x + dx[i];
-
-		if (ny >= 0 && ny < N && nx >= 0 && nx < M && map[ny][nx] > 0 && !visited[ny][nx])
-		{
-			DFS(ny, nx, visited);
-		}
-	}
 }
