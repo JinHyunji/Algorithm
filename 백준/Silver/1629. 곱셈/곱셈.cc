@@ -2,19 +2,20 @@
 using namespace std;
 using ll = long long;
 
-ll Pow(ll a, ll b, ll c)
+ll abs(ll a, ll b, ll c)
 {
-	if (b == 0) return 1;
+	if (b == 1) return a % c;
 
-	ll temp = Pow(a, b / 2, c);
-	temp = temp * temp % c;
-	if (b % 2 == 0) return temp;
-	else return temp * a % c;
+	ll Val = abs(a, b / 2, c);
+	Val = Val * Val % c;
+
+	if (b % 2 == 0) return Val;
+	return Val * a % c;
 }
-
 int main()
 {
-	int A, B, C;
+	ll A, B, C;
 	cin >> A >> B >> C;
-	cout << Pow(A, B, C);
+
+	cout << abs(A, B, C);
 }
