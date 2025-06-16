@@ -22,6 +22,6 @@ int main()
 	for (int i = 0; i < N; i++)
 		cin >> arr[i];
 	func(0, 0);
-	if (S == 0) cnt--;
+	if (S == 0) cnt--; // 공집합이 포함되는 경우는 cnt를 하나 빼기
 	cout << cnt;
 }
