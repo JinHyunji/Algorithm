@@ -1,39 +1,35 @@
 #include <iostream>
 using namespace std;
 
-int N, answer = 0;
-int col[15];
+int N, cnt = 0;
+bool isUsed[40][3]; // 열, /방향 대각선, \방향 대각선
 
-bool IsOk(int row)
+void func(int curr) // curr번째 row에 말을 배치하는 함수
 {
-	for (int prev = 0; prev < row; prev++)
+	if (curr == N) // N개의 말을 놓았다면
 	{
-		if (col[prev] == col[row] || abs(col[row] - col[prev]) == abs(row - prev)) 
-			return false;
-	}
-	return true;
-}
-
-void Backtracking(int row)
-{
-	if (row == N)
-	{
-		answer++;
+		cnt++;
 		return;
 	}
 
-	for (int c = 0; c < N; c++)
+	for (int i = 0; i < N; i++) // (curr, i)에 퀸을 놓을 예정
 	{
-		col[row] = c;
-		if (IsOk(row))
-			Backtracking(row + 1);
+		if (!isUsed[i][0] && !isUsed[i + curr][1] && !isUsed[curr - i + N - 1][2])
+		{
+			isUsed[i][0] = true;
+			isUsed[i + curr][1] = true;
+			isUsed[curr - i + N - 1][2] = true;
+			func(curr + 1);
+			isUsed[i][0] = false;
+			isUsed[i + curr][1] = false;
+			isUsed[curr - i + N - 1][2] = false;
+		}
 	}
 }
 
 int main()
 {
 	cin >> N;
-	Backtracking(0);
-	cout << answer;
-	return 0;
+	func(0);
+	cout << cnt;
 }
