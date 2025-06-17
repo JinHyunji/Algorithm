@@ -1,37 +1,21 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
+#include <vector>
 using namespace std;
-
-int N, M;
-vector<int> result;
-
-void Combi(int start);
 
 int main()
 {
+	int N, M;
 	cin >> N >> M;
+	vector<int> a(M, 0);
+	vector<int> b(N - M, 1);
+	a.insert(a.end(), b.begin(), b.end());
 
-	Combi(1);
-}
-
-void Combi(int start)
-{
-	if (result.size() == M)
+	do
 	{
-		for (int i : result)
-		{
-			cout << i << " ";
-		}
-		cout << endl;
-		return;
-	}
-
-
-	for (int i = start; i <= N; i++)
-	{
-		result.push_back(i);
-		Combi(i + 1);
-		result.pop_back();
-	}
+		for (int i = 0; i < N; i++)
+			if (a[i] == 0)
+				cout << i + 1 << ' ';
+		cout << '\n';
+	} while (next_permutation(a.begin(), a.end()));
 }
