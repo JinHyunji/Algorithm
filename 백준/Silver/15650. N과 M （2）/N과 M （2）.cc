@@ -1,21 +1,30 @@
 #include <iostream>
-#include <algorithm>
-#include <vector>
 using namespace std;
+
+int N, M;
+int arr[8];
+
+void func(int k)
+{
+	if (k == M)
+	{
+		for (int i = 0; i < M; i++)
+			cout << arr[i] << ' ';
+		cout << '\n';
+		return;
+	}
+
+	int st = 1;
+	if (k != 0) st = arr[k - 1] + 1;
+	for (int i = st; i <= N; i++)
+	{
+		arr[k] = i;
+		func(k + 1);
+	}
+}
 
 int main()
 {
-	int N, M;
 	cin >> N >> M;
-	vector<int> a(M, 0);
-	vector<int> b(N - M, 1);
-	a.insert(a.end(), b.begin(), b.end());
-
-	do
-	{
-		for (int i = 0; i < N; i++)
-			if (a[i] == 0)
-				cout << i + 1 << ' ';
-		cout << '\n';
-	} while (next_permutation(a.begin(), a.end()));
+	func(0);
 }
