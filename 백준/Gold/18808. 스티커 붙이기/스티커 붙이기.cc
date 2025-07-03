@@ -9,87 +9,64 @@ int N, M, K;
 int notebook[50][50];
 vector<vector<vector<int>>> sticker;
 
+vector<vector<int>> rotateRight(const vector<vector<int>>& mat)
+{
+	int R = mat.size(), C = mat[0].size();
+	vector<vector<int>> rotated(C, vector<int>(R));
+	for (int i = 0; i < R; i++)
+		for (int j = 0; j < C; j++)
+			rotated[j][R - 1 - i] = mat[i][j];
+	return rotated;
+}
+
 void IsAttached(int index)
 {
 	for (int rot = 0; rot < 4; rot++)
 	{
 		// Sticker Width, Height
-		int R = (int)sticker[index].size();
-		int C = (int)sticker[index][0].size();
+		int R = (int)sticker[index].size(), C = (int)sticker[index][0].size();
 
 		for (int x = 0; x <= N - R; x++)
 		{
 			for (int y = 0; y <= M - C; y++)
 			{
-				bool isAllCorrect = false;
-				for (int r = 0; r < R; r++)
+				bool canAttack = true;
+				for (int r = 0; r < R && canAttack; r++)
 				{
 					for (int c = 0; c < C; c++)
 					{
-						int nx = x + r;
-						int ny = y + c;
-
-						if (notebook[nx][ny] == 1 && sticker[index][r][c] == 1)
+						if (notebook[x + r][y + c] == 1 && sticker[index][r][c] == 1)
 						{
-							isAllCorrect = true;
+							canAttack = false;
 							break;
 						}
 
 					}
-
-					if (isAllCorrect)
-					{
-						break;
-					}
 				}
 
-				if (isAllCorrect) continue;
+				if (!canAttack) continue;
+
+				// Attach Sticker
 				for (int r = 0; r < R; r++)
-				{
 					for (int c = 0; c < C; c++)
-					{
-						int nx = x + r;
-						int ny = y + c;
-
 						if (sticker[index][r][c] == 1)
-						{
-							notebook[nx][ny] = 1;
-						}
+							notebook[x + r][y + c] = 1;
 
-					}
-				}
 				return;
 			}
 		}
 
 		// RightTurn
-		vector<vector<int>> rotated(C, vector<int>(R));
-		for (int i = 0; i < R; i++)
-		{
-			for (int j = 0; j < C; j++)
-			{
-				rotated[j][R - 1 - i] = sticker[index][i][j];
-			}
-		}
-
-		sticker[index] = rotated;
+		sticker[index] = rotateRight(sticker[index]);
 	}
-	return;
 }
 
 int CountSticker()
 {
 	int cnt = 0;
 	for (int x = 0; x < N; x++)
-	{
 		for (int y = 0; y < M; y++)
-		{
-			if (notebook[x][y] == 1)
-			{
-				cnt++;
-			}
-		}
-	}
+			cnt += notebook[x][y];
 	return cnt;
 }
 
@@ -105,17 +82,11 @@ int main()
 	{
 		int R, C;
 		cin >> R >> C;
-		vector<vector<int>> st(R, vector<int>(C));
-
+		sticker[i].assign(R, vector<int>(C));
 		for (int x = 0; x < R; x++)
 			for (int y = 0; y < C; y++)
-				cin >> st[x][y];
+				cin >> sticker[i][x][y];
 
-		sticker[i] = st;
-	}
-
-	for (int i = 0; i < K; i++)
-	{
 		IsAttached(i);
 	}
 
